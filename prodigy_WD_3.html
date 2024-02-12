@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe</title>
+<style>
+  body {
+    background-color: powderblue;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
+  .board {
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  .board td {
+    width: 150px; /* Adjust width to increase size */
+    height: 150px; /* Adjust height to increase size */
+    border: 1px solid #333;
+    font-size: 124px;
+    cursor: pointer;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #008B8B;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Tic Tac Toe</h1>
+  <p id="player">Player: X</p>
+  <table class="board">
+    <tr>
+      <td onclick="handleClick(0, 0)"></td>
+      <td onclick="handleClick(0, 1)"></td>
+      <td onclick="handleClick(0, 2)"></td>
+    </tr>
+    <tr>
+      <td onclick="handleClick(1, 0)"></td>
+      <td onclick="handleClick(1, 1)"></td>
+      <td onclick="handleClick(1, 2)"></td>
+    </tr>
+    <tr>
+      <td onclick="handleClick(2, 0)"></td>
+      <td onclick="handleClick(2, 1)"></td>
+      <td onclick="handleClick(2, 2)"></td>
+    </tr>
+  </table>
+  <button onclick="reset()">Reset</button>
+  <p id="message"></p>
+</div>
+
+<script>
+  let currentPlayer = 'X';
+  let board = [
+    ['', '', ''],
+    ['', '', ''],
+    ['', '', '']
+  ];
+
+  function handleClick(row, col) {
+    if (board[row][col] === '' && !checkWinner() && !checkDraw()) {
+      board[row][col] = currentPlayer;
+      render();
+      if (!checkWinner() && !checkDraw()) {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        document.getElementById('player').innerText = `Player: ${currentPlayer}`;
+      }
+    }
+  }
+
+  function checkWinner() {
+    const lines = [
+      // Rows
+      [[0, 0], [0, 1], [0, 2]],
+      [[1, 0], [1, 1], [1, 2]],
+      [[2, 0], [2, 1], [2, 2]],
+      // Columns
+      [[0, 0], [1, 0], [2, 0]],
+      [[0, 1], [1, 1], [2, 1]],
+      [[0, 2], [1, 2], [2, 2]],
+      // Diagonals
+      [[0, 0], [1, 1], [2, 2]],
+      [[0, 2], [1, 1], [2, 0]]
+    ];
+    for (const line of lines) {
+      const [a, b, c] = line;
+      if (board[a[0]][a[1]] && board[a[0]][a[1]] === board[b[0]][b[1]] && board[a[0]][a[1]] === board[c[0]][c[1]]) {
+        document.getElementById('message').innerText = `${currentPlayer} wins!`;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function checkDraw() {
+    const flatBoard = board.flat();
+    if (!flatBoard.includes('')) {
+      document.getElementById('message').innerText = 'It\'s a draw!';
+      return true;
+    }
+    return false;
+  }
+
+  function reset() {
+    currentPlayer = 'X';
+    board = [
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', '']
+    ];
+    render();
+    document.getElementById('message').innerText = '';
+    document.getElementById('player').innerText = `Player: ${currentPlayer}`;
+  }
+
+  function render() {
+    const cells = document.querySelectorAll('.board td');
+    board.forEach((row, rowIndex) => {
+      row.forEach((cell, colIndex) => {
+        cells[rowIndex * 3 + colIndex].innerText = cell;
+      });
+    });
+  }
+
+  render();
+</script>
+</body>
+</html>
